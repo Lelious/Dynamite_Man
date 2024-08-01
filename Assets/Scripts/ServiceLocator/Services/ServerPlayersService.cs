@@ -6,11 +6,12 @@ public sealed class ServerPlayersService : IService
     private HashSet<Player> _connectedPlayers;
     private HashSet<IMapObject> _mapPlayers;
     private int _activePlayers;
-
+    private List<Player> _alivePlayers;
     public ServerPlayersService()
     {
         _mapPlayers = new HashSet<IMapObject>();
         _connectedPlayers = new HashSet<Player>();
+        _alivePlayers = new List<Player>();
 
         Player.OnPlayerDead += ChangePlayerState;
         ServiceLocator<IService>.Instance.Register(this);
@@ -60,9 +61,12 @@ public sealed class ServerPlayersService : IService
 
     public void ResetGame()
     {
+        _alivePlayers.Clear();
+
         foreach (var player in _connectedPlayers)
         {
             player.AppearPlayer();
+            _alivePlayers.Add(player);
         }
 
         _activePlayers = _connectedPlayers.Count;
@@ -118,10 +122,13 @@ public sealed class ServerPlayersService : IService
     private void ChangePlayerState(Player player)
     {
         _activePlayers--;
+        player.Deaths++;
+        _alivePlayers.Remove(player);
 
-        if (_activePlayers <= 1)
+        if (_activePlayers == 1)
         {
             _stateMachine.Enter<GameRestartState>();
+            _alivePlayers[0].Wins++;
         }
     }
 }

@@ -17,7 +17,9 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     [SyncVar(hook = nameof(HandleDisplayNameChanged))]
     private string _name = "noname";
     private PlayerBombVisualService _bombVisual;
-
+    [SyncVar(hook = nameof(HandleDisplayNameChangedInt))]
+    public int Wins;
+    public int Kills, Deaths;
     [SyncVar]
     private float _bombExplodeTime;
     [SyncVar]
@@ -142,7 +144,11 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
 
     private void HandleDisplayNameChanged(string oldValue, string newValue)
     {
-        _displayName.text = _name;
+        _displayName.text = $"{_name} ({Wins})";
+    }
+    private void HandleDisplayNameChangedInt(int oldValue, int newValue)
+    {
+        _displayName.text = $"{_name} ({Wins})";
     }
 
     [ServerCallback]

@@ -23,14 +23,15 @@ public class Bomb : NetworkBehaviour, IMapObject
     private int _bombPower;
 
     [ServerCallback]
-    public void InitializeBomb(Vector2Int pos, int bombPower)
+    public void InitializeBomb(Vector2Int pos, Player player)
     {
+        _player = player;
         _position = pos;
         _timer = _timeToExplode;
         _collisionCollider.enabled = false;
         _initTime = 0.2f;
         _isInited = false;
-        _bombPower = bombPower;
+        _bombPower = player.GetBombPower();
         _mapService = ServiceLocator<IService>.Instance.Get<MapService>();
         StartCoroutine(BombRoutine());
     }
@@ -70,7 +71,12 @@ public class Bomb : NetworkBehaviour, IMapObject
             {
                 if (obj.GetMapObjectType() == MapObjectType.Player)
                 {
-                    obj.GetObject().GetComponent<IDamagable>().TakeDamage(new Vector3(transform.position.x, -1f, transform.position.z));
+                    var gO = obj.GetObject();
+                    gO.GetComponent<IDamagable>().TakeDamage(new Vector3(transform.position.x, -1f, transform.position.z));
+                    if (gO.GetComponent<Player>() != _player)
+                    {
+                        _player.Kills++;
+                    }
                 }              
             }
         }

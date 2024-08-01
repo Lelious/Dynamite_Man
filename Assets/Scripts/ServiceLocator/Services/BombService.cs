@@ -26,7 +26,7 @@ public sealed class BombService : NetworkBehaviour, IService
                 Bomb bomb = GetOrCreate(player);
                 bomb.transform.position = new Vector3(pos.x, 0.5f, pos.y);
                 _mapService.RegisterMapObject(bomb, pos);
-                bomb.InitializeBomb(pos, player.GetBombPower());
+                bomb.InitializeBomb(pos, player);
                 NetworkServer.Spawn(bomb.gameObject, connectionToClient);
             }
         }
