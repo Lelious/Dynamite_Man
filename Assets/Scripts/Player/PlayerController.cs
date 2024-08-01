@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using System.Collections;
 
 public sealed class PlayerController : NetworkBehaviour
 {
@@ -12,9 +13,13 @@ public sealed class PlayerController : NetworkBehaviour
 
     private Vector3 _direction;
     private float _moveFactor;
+    private bool _isInited;
 
-    private void Start()
-    {       
+    [ClientRpc]
+    public void InitController()
+    {
+        if (_isInited) return;
+
         if (isLocalPlayer && isClient)
         {
             ServiceLocator<IService>.Instance.Get<InputService>().SetPlayerController(this);

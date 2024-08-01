@@ -58,7 +58,7 @@ namespace Mirror.Discovery
         protected UdpClient serverUdpClient;
         protected UdpClient clientUdpClient;
 
-        protected string nameOfGame;
+        public static string NameOfGame { get; private set; }
 
 #if UNITY_EDITOR
         public virtual void OnValidate()
@@ -163,7 +163,7 @@ namespace Mirror.Discovery
             Debug.Log($"AdvertiseServer {gameName}");
             if (!SupportedOnThisPlatform)
                 throw new PlatformNotSupportedException("Network discovery not supported in this platform");
-            nameOfGame = gameName;
+            NameOfGame = gameName;
             StopDiscovery();
 
             // Setup port -- may throw exception

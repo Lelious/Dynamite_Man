@@ -27,6 +27,6 @@ public class CustomLobbyServerButton : MonoBehaviour
 
     public void ConnectToServer()
     {
-        _hud.Connect(_response);
+        _hud.SetServerToConnect(_response);
     }
 }

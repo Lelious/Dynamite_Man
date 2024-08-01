@@ -16,14 +16,19 @@ public class InputService : ServiceBase
     private Player _player;
     private Vector3 _movementInput;
 
-    private void Awake()
+    private void Start()
     {
         _bombButton.onClick.AddListener(PlaceBomb);
+        ServiceLocator<IService>.Instance.Register(this);
     }
 
     private void Update()
     {
-        if (_controller== null) return;
+        if (_controller == null)
+        {
+            Debug.Log("Null controller");
+            return;
+        }
         if (_disableControll) return;
 
         MoveInput();

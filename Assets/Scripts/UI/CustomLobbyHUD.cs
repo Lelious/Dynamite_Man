@@ -15,7 +15,7 @@ public class CustomLobbyHUD : MonoBehaviour
     [SerializeField] private GameNameInput _inputGameName;
 
     private readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
-
+    private ServerResponse _server;
     private void Start()
     {
         _networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
@@ -30,6 +30,7 @@ public class CustomLobbyHUD : MonoBehaviour
     {
         discoveredServers.Clear();
         NetworkManager.singleton.StartHost();
+        _landingPanel.SetActive(false);
         _networkDiscovery.AdvertiseServer(_inputGameName.GetName());
     }
 
@@ -55,11 +56,14 @@ public class CustomLobbyHUD : MonoBehaviour
         }
     }
 
-    public void Connect(ServerResponse response)
+    public void Connect()
     {
         _networkDiscovery.StopDiscovery();
-        NetworkManager.singleton.StartClient(response.uri);
+        _landingPanel.SetActive(false);
+        NetworkManager.singleton.StartClient(_server.uri);
     }
+
+    public void SetServerToConnect(ServerResponse response) => _server = response;
 
     public void Quit()
     {

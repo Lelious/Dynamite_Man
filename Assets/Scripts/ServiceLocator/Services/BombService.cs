@@ -22,7 +22,6 @@ public sealed class BombService : NetworkBehaviour, IService
 
             if (_mapService.CheckFree(pos))
             {
-                Debug.Log($"No bombs at coord {pos}");
                 player.ReduseBombCount();
                 Bomb bomb = GetOrCreate(player);
                 bomb.transform.position = new Vector3(pos.x, 0.5f, pos.y);

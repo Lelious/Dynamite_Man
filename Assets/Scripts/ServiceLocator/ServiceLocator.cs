@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ServiceLocator<T> : IServiceLocator<T>
 {
+    public static event Action<T> OnServiceRegistered;
     public static ServiceLocator<T> Instance
     {
         get
@@ -44,6 +45,7 @@ public class ServiceLocator<T> : IServiceLocator<T>
         if (_serviceMap.TryAdd(type, newService))
         {
             Debug.Log($"Registered {typeof(TP)}");
+            OnServiceRegistered?.Invoke(newService);
             return newService;
         }
         else

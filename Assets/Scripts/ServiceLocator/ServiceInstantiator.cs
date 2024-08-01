@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class ServiceInstantiator : MonoBehaviour
@@ -5,7 +6,7 @@ public class ServiceInstantiator : MonoBehaviour
     [SerializeField] private InputService _inputService;
 
 
-    private void Awake()
+    private void Start()
     {
         InitializeInputService();
     }

@@ -9,11 +9,11 @@ public sealed class ServerPlayersService : IService
 
     public ServerPlayersService()
     {
-        ServiceLocator<IService>.Instance.Register(this);      
-        Player.OnPlayerDead += ChangePlayerState;
-
         _mapPlayers = new HashSet<IMapObject>();
         _connectedPlayers = new HashSet<Player>();
+
+        Player.OnPlayerDead += ChangePlayerState;
+        ServiceLocator<IService>.Instance.Register(this);
     }
 
     public void InitService(GameLoopStateMachine loopStateMachine)
@@ -72,9 +72,12 @@ public sealed class ServerPlayersService : IService
     {
         foreach (var player in _connectedPlayers)
         {
+            player.InitServices();
             player.SetStartBombCount(1);
             player.SetBombPower(1);
-            player.GetComponent<PlayerController>().SetSpeed(2f);
+            var controller = player.GetComponent<PlayerController>();
+            controller.SetSpeed(3f);
+            controller.InitController();
             player.AppearPlayer();
             player.RpcEnableControll();
         }

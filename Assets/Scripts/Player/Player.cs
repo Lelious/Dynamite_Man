@@ -2,6 +2,7 @@ using UnityEngine;
 using Mirror;
 using System;
 using System.Collections;
+using TMPro;
 
 public class Player : NetworkBehaviour, IDamagable, IMapObject
 {
@@ -11,13 +12,17 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     [SerializeField] private GameObject _ragdoll;
     [SerializeField] private BombService _bombService;
     [SerializeField] private CharacterController _controller;
+    [SerializeField] private TextMeshProUGUI _displayName;
+    [SerializeField] private Transform _nameUI;
+    [SyncVar(hook = nameof(HandleDisplayNameChanged))]
+    private string _name = "noname";
     private PlayerBombVisualService _bombVisual;
 
     [SyncVar]
     private float _bombExplodeTime;
     [SyncVar]
     private int _bombCount;
-    [SyncVar]
+    [SyncVar(hook = nameof(ValidateBombs))]
     private int _maxBombCount;
     [SyncVar]
     private int _bombPower;
@@ -26,18 +31,52 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
 
     private void Start()
     {
-        _controller = GetComponent<CharacterController>();
+        if (isLocalPlayer && isClient)
+        {
+            ServiceLocator<IService>.OnServiceRegistered += ValidateService;
+        }
 
+        _controller = GetComponent<CharacterController>();
+    }
+
+    private void LateUpdate()
+    {
+        _nameUI.LookAt(_nameUI.position + Camera.main.transform.rotation * Vector3.back, Camera.main.transform.rotation * Vector3.up);
+    }
+
+    public BombService GetBombService() => _bombService;
+    public int GetBombCount() => _bombCount;
+    public int GetBombPower() => _bombPower;
+
+    private void ValidateService(IService service)
+    {
+        if (service.GetType() == typeof(InputService))
+        {
+            ServiceLocator<IService>.Instance.Get<InputService>().SetPlayer(this);
+        }
+        if (service.GetType() == typeof(PlayerBombVisualService))
+        {
+            _bombVisual = ServiceLocator<IService>.Instance.Get<PlayerBombVisualService>();
+        }
+    }
+
+    private void ValidateBombs(int oldValue, int newValue)
+    {
+        if (isLocalPlayer && isClient)
+        {
+            _bombVisual.ValidateBombs(newValue);
+        }
+    }
+
+    [ClientRpc]
+    public void InitServices()
+    {
         if (isLocalPlayer && isClient)
         {
             ServiceLocator<IService>.Instance.Get<InputService>().SetPlayer(this);
             _bombVisual = ServiceLocator<IService>.Instance.Get<PlayerBombVisualService>();
         }
     }
-
-    public BombService GetBombService() => _bombService;
-    public int GetBombCount() => _bombCount;
-    public int GetBombPower() => _bombPower;
 
     [TargetRpc]
     private void RpcTakeDamage()
@@ -53,6 +92,11 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     {
         if (isLocalPlayer && isClient)
         {
+            if (_bombVisual == null)
+            {
+                _bombVisual = ServiceLocator<IService>.Instance.Get<PlayerBombVisualService>();
+            }
+
             _bombVisual.StartResettingBomb(_bombExplodeTime);
         }
     }
@@ -60,6 +104,10 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     [TargetRpc]
     private void RpcValidateBombCount()
     {
+        if (_bombVisual == null)
+        {
+            _bombVisual = ServiceLocator<IService>.Instance.Get<PlayerBombVisualService>();
+        }
         _bombVisual.ValidateBombs(_maxBombCount);
     }
 
@@ -90,6 +138,11 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     {
         _bombCount--;        
         RpcStartVisualBombReloading();
+    }
+
+    private void HandleDisplayNameChanged(string oldValue, string newValue)
+    {
+        _displayName.text = _name;
     }
 
     [ServerCallback]
@@ -142,6 +195,12 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     public void SetBombExplodeTime()
     {
         _bombExplodeTime = ServiceLocator<IService>.Instance.Get<ServerCoreService>().BombExplodeTime;
+    }
+
+    [ServerCallback]
+    public void SetDisplayName(string name)
+    {
+        _name = name;
     }
 
     [ServerCallback]

@@ -39,7 +39,7 @@ namespace Mirror.Discovery
                 {
                     serverId = ServerId,
                     uri = transport.ServerUri(),
-                    GameName = nameOfGame
+                    GameName = NameOfGame
                 };
             }
             catch (NotImplementedException)

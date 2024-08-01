@@ -10,12 +10,13 @@ public class PlayerNameInput : MonoBehaviour
     private const string _playerName = "PlayerName";
     private string _name;
 
+    public static string DisplayName { get; private set; }
+
     private void OnEnable()
     {
         SetInputField();
         SetPlayerName();
     }
-    public string GetName() => _name;
 
     public void SetPlayerName()
     {
