@@ -14,7 +14,8 @@ public class ServerCoreService : NetworkBehaviour, IService
 
         _playersService = new ServerPlayersService();
         _stateMachine = new GameLoopStateMachine();
-        _playersService.InitService(_stateMachine);
+        _playersService.InitService(_stateMachine);       
         _stateMachine.Enter<GameLoadState>();
+
     }
 }

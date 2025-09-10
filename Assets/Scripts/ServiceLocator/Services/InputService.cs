@@ -31,7 +31,31 @@ public class InputService : ServiceBase
         }
         if (_disableControll) return;
 
-        MoveInput();
+        _movementInput.x = _joystick.Horizontal;
+        _movementInput.z = _joystick.Vertical;
+
+        if(Input.GetKey(KeyCode.W))
+        {
+            _movementInput = new Vector3(0f, 0f, 1f);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            _movementInput = new Vector3(0f, 0f, -1f);
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            _movementInput = new Vector3(-1f, 0f, 0f);
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            _movementInput = new Vector3(1f, 0f, 0f);
+        }
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            PlaceBomb();
+        }
+
+        MoveInput(_movementInput);
     }
 
     public void SetPlayerController(PlayerController controller)
@@ -76,11 +100,9 @@ public class InputService : ServiceBase
         _bombService.CmdPlaceBomb(_player);
     }
 
-    private void MoveInput()
+    private void MoveInput(Vector3 inputKeyboard)
     {
-        _movementInput.x = _joystick.Horizontal;
-        _movementInput.z = _joystick.Vertical;
-        _controller.CmdMovePlayer(_movementInput);
-        _controller.SetMovementVector(_movementInput);
+        _controller.CmdMovePlayer(inputKeyboard);
+        _controller.SetMovementVector(inputKeyboard);
     }
 }

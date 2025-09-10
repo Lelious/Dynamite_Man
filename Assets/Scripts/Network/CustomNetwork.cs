@@ -16,6 +16,8 @@ public class CustomNetwork : NetworkManager
     [SerializeField] private NetworkRoomPlayerLobby _roomPlayerPrefab;
     [SerializeField] private string menuScene;
 
+    private bool _isGameStarted;
+
     public List<NetworkRoomPlayerLobby> RoomPlayersList { get; } = new List<NetworkRoomPlayerLobby>();
 
     private List<Player> _gamePlayers = new List<Player>();
@@ -24,6 +26,7 @@ public class CustomNetwork : NetworkManager
     public override void Start()
     {
         base.Start();
+
         ServiceLocator<IService>.OnServiceRegistered += ValidateService;
     }
 
@@ -31,6 +34,8 @@ public class CustomNetwork : NetworkManager
     {
         if (service.GetType() == typeof(ServerPlayersService))
         {
+            _isGameStarted = true;
+
             for (int i = 0; i < _gamePlayers.Count; i++)
             {
                 AddPlayerServer(_gamePlayers[i]);
@@ -48,7 +53,6 @@ public class CustomNetwork : NetworkManager
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
-        Debug.Log($"{SceneManager.GetActiveScene().name} current {menuScene} menu");
         if (SceneManager.GetActiveScene().name == menuScene)
         {
             bool isLeader = RoomPlayersList.Count == 0;
@@ -79,7 +83,11 @@ public class CustomNetwork : NetworkManager
             NotifyPlayersOfReadyState();
         }
 
-        RemovePlayerServer(conn.identity.GetComponent<Player>());
+        if (_isGameStarted)
+        {
+            RemovePlayerServer(conn.identity.GetComponent<Player>());
+        }
+
         NetworkServer.DestroyPlayerForConnection(conn);
     }
 
@@ -102,10 +110,12 @@ public class CustomNetwork : NetworkManager
         RoomPlayersList.Add(player);
         NotifyPlayersOfReadyState();
     }
+
     public void RemoveRoomPlayer(NetworkRoomPlayerLobby player)
     {
         RoomPlayersList.Remove(player);
         NotifyPlayersOfReadyState();
+        Debug.Log("RemoveRoomPlayer");
     }
 
     [Server]
@@ -144,7 +154,7 @@ public class CustomNetwork : NetworkManager
     {
         if (SceneManager.GetActiveScene().name == menuScene && newSceneName.StartsWith("MainScene"))
         {
-            for (int i = RoomPlayersList.Count - 1; i >= 0; i--)
+            for (int i = 0; i < RoomPlayersList.Count; i++)
             {
                 var conn = RoomPlayersList[i].connectionToClient;
                 GameObject player = Instantiate(playerPrefab, new Vector3(0f, 500f, 0f), Quaternion.identity);
@@ -152,9 +162,9 @@ public class CustomNetwork : NetworkManager
                 player.name = $"{playerPrefab.name} [connId={conn.connectionId}]";
                 Player connectedPlayer = player.GetComponent<Player>();
                 connectedPlayer.SetDisplayName(RoomPlayersList[i].DisplayName);
-                DontDestroyOnLoad(connectedPlayer.gameObject);
-                //NetworkServer.Destroy(conn.identity.gameObject);             
+                DontDestroyOnLoad(connectedPlayer.gameObject);            
                 NetworkServer.ReplacePlayerForConnection(conn, player.gameObject);
+                //NetworkServer.Destroy(RoomPlayersList[i].gameObject);
                 _gamePlayers.Add(connectedPlayer);
             }
         }

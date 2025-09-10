@@ -21,6 +21,14 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     public bool IsReady = false;
 
     private bool _isLeader;
+    public bool IsLeader
+    {
+        set
+        {
+            _isLeader = value;
+            _startGameButton.gameObject.SetActive(value);
+        }
+    }
 
     public override void OnStartAuthority()
     {
@@ -38,12 +46,12 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     {
         Room.RemoveRoomPlayer(this);
         UpdateDisplay();
+        Debug.Log("StopClient");
     }
 
-    [Command]
-    private void CmdSetDisplayName(string displayName)
+    public void HardUpdateDisplay()
     {
-        DisplayName = displayName;
+        UpdateDisplay();
     }
 
     [Command]
@@ -70,6 +78,12 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
         if (!_isLeader) return;
 
         _startGameButton.interactable = readyToStart;  
+    }
+
+    [Command]
+    private void CmdSetDisplayName(string displayName)
+    {
+        DisplayName = displayName;
     }
 
     private void UpdateDisplay()
@@ -100,15 +114,6 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
             _playerNameTexts[i].text = Room.RoomPlayersList[i].DisplayName;
             _playerReadyTexts[i].SetActive(Room.RoomPlayersList[i].IsReady);
             _playerSlot[i].sprite = _enabledSlot;
-        }
-    }
-
-    public bool IsLeader
-    {
-        set 
-        {
-            _isLeader = value;
-            _startGameButton.gameObject.SetActive(value);
         }
     }
 

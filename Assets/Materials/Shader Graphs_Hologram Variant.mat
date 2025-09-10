@@ -11,15 +11,15 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: e2e101026da58d94b961be15913c8fd8,
     type: 3}
   m_Parent: {fileID: 2100000, guid: 60962ec8782f7104b99698f5bcdf7184, type: 2}
-  m_ModifiedSerializedProperties: 0
+  m_ModifiedSerializedProperties: 22
   m_ValidKeywords:
   - _ALPHAPREMULTIPLY_ON
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses:
@@ -30,9 +30,12 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _GlowIntensity: 0.12
+    - _GlowIntensity: 0.05
+    - _QueueControl: 0
+    - _QueueOffset: 0
     m_Colors:
-    - _FreshnelColor: {r: 0, g: 1.4980394, b: 0.13123716, a: 0}
+    - _BaseColor: {r: 1, g: 0.074380405, b: 0, a: 1}
+    - _FreshnelColor: {r: 0.0062167645, g: 1, b: 0, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &8569711426892960044
 MonoBehaviour:

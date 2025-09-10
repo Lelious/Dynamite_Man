@@ -7,7 +7,6 @@ public sealed class PlayerController : NetworkBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private CharacterController _characterController;
 
-
     [SyncVar]
     [SerializeField] private float _walkSpeed;
 
@@ -45,7 +44,20 @@ public sealed class PlayerController : NetworkBehaviour
     [Client]
     public void SetMovementVector(Vector3 direction)
     {
-        _direction = direction.normalized;
+        Debug.Log(direction);
+        if(Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
+        {
+            _direction = new Vector3(direction.x > 0 ? 1 : -1, 0f, 0f);
+        }
+        else if(Mathf.Abs(direction.x) < Mathf.Abs(direction.z))
+        {
+            _direction = new Vector3(0f, 0f, direction.z > 0 ? 1 : -1);
+        }
+        else
+        {
+            _direction = Vector3.zero;
+        }
+        Debug.Log(_direction);
     }
 
     #region Server
@@ -60,7 +72,19 @@ public sealed class PlayerController : NetworkBehaviour
     [Command]
     public void CmdMovePlayer(Vector3 direction)
     {
-        _direction = direction.normalized;
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
+        {
+            _direction = new Vector3(direction.x > 0 ? 1 : -1, 0f, 0f);
+        }
+        else if (Mathf.Abs(direction.x) < Mathf.Abs(direction.z))
+        {
+            _direction = new Vector3(0f, 0f, direction.z > 0 ? 1 : -1);
+        }
+        else
+        {
+            _direction = Vector3.zero;
+        }
+        Debug.Log(_direction);
     }
 
     [ServerCallback]

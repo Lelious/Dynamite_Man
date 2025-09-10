@@ -16,14 +16,12 @@ public class CustomLobbyHUD : MonoBehaviour
 
     private readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
     private ServerResponse _server;
+
     private void Start()
     {
         _networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
 
-        foreach (var item in _buttonToConnect)
-        {
-            item.SetHUD(this);
-        }
+        CustomLobbyServerButton.OnServerButtonClicked += SetServer;
     }
 
     public void StartHost()
@@ -38,6 +36,32 @@ public class CustomLobbyHUD : MonoBehaviour
     {
         discoveredServers.Clear();
         _networkDiscovery.StartDiscovery();
+    }
+
+    public void Connect()
+    {
+        if (_server.EndPoint == null) return;
+
+        _networkDiscovery.StopDiscovery();
+        _landingPanel.SetActive(false);
+        NetworkManager.singleton.StartClient(_server.uri);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    private void OnDiscoveredServer(ServerResponse info)
+    {
+        if (discoveredServers.TryAdd(info.serverId, info))
+        {
+            RedrawFindedServers();
+        }
+    }
+    private void SetServer(ServerResponse response)
+    {
+        _server = response;
     }
 
     private void RedrawFindedServers()
@@ -56,25 +80,8 @@ public class CustomLobbyHUD : MonoBehaviour
         }
     }
 
-    public void Connect()
+    private void OnDestroy()
     {
-        _networkDiscovery.StopDiscovery();
-        _landingPanel.SetActive(false);
-        NetworkManager.singleton.StartClient(_server.uri);
-    }
-
-    public void SetServerToConnect(ServerResponse response) => _server = response;
-
-    public void Quit()
-    {
-        Application.Quit();
-    }
-
-    private void OnDiscoveredServer(ServerResponse info)
-    {
-        if (discoveredServers.TryAdd(info.serverId, info))
-        {
-            RedrawFindedServers();
-        }
+        CustomLobbyServerButton.OnServerButtonClicked -= SetServer;
     }
 }

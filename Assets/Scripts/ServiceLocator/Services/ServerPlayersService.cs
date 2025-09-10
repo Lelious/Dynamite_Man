@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public sealed class ServerPlayersService : IService
 {
@@ -7,6 +8,7 @@ public sealed class ServerPlayersService : IService
     private HashSet<IMapObject> _mapPlayers;
     private int _activePlayers;
     private List<Player> _alivePlayers;
+
     public ServerPlayersService()
     {
         _mapPlayers = new HashSet<IMapObject>();
@@ -55,7 +57,7 @@ public sealed class ServerPlayersService : IService
     public void RemovePlayer(Player player)
     {
         _connectedPlayers.Remove(player);
-        _mapPlayers.Remove(player.GetComponent<IMapObject>());
+        _mapPlayers.Remove(player);
         _activePlayers--;
     }
 
@@ -74,6 +76,7 @@ public sealed class ServerPlayersService : IService
 
     public void StartGame()
     {
+        Debug.Log($"start game, {_connectedPlayers.Count}");
         foreach (var player in _connectedPlayers)
         {
             player.InitServices();

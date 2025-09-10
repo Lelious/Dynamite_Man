@@ -4,19 +4,20 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Mirror.Discovery;
+using System;
 
 public class CustomLobbyServerButton : MonoBehaviour
 {
+    public static event Action<ServerResponse> OnServerButtonClicked;
     public Button Button;
 
     [SerializeField] private TextMeshProUGUI _serverName;
-    private ServerResponse _response;
-    private CustomLobbyHUD _hud;
 
-    public void SetHUD(CustomLobbyHUD hud)
+    private ServerResponse _response;
+
+    private void Awake()
     {
-        _hud = hud;
-        Button.onClick.AddListener(ConnectToServer);
+        Button.onClick.AddListener(ServerButtonClick);
     }
 
     public void SetServer(ServerResponse response)
@@ -25,8 +26,8 @@ public class CustomLobbyServerButton : MonoBehaviour
         _serverName.text = response.GameName;
     }
 
-    public void ConnectToServer()
+    public void ServerButtonClick()
     {
-        _hud.SetServerToConnect(_response);
+        OnServerButtonClicked?.Invoke(_response);
     }
 }

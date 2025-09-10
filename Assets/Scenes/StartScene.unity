@@ -2946,7 +2946,7 @@ PrefabInstance:
         type: 3}
       propertyPath: playerPrefab
       value: 
-      objectReference: {fileID: 107813884489303280, guid: 23d46a7c25853d44aa4b35d9803c9d4d,
+      objectReference: {fileID: 4530499948952636081, guid: 23d46a7c25853d44aa4b35d9803c9d4d,
         type: 3}
     - target: {fileID: 4457792621025506728, guid: baaf82bc878b68241bd2627067b9d0ce,
         type: 3}
@@ -2962,13 +2962,19 @@ PrefabInstance:
     - target: {fileID: 4457792621025506728, guid: baaf82bc878b68241bd2627067b9d0ce,
         type: 3}
       propertyPath: spawnPrefabs.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4457792621025506728, guid: baaf82bc878b68241bd2627067b9d0ce,
         type: 3}
       propertyPath: spawnPrefabs.Array.data[4]
       value: 
       objectReference: {fileID: 4515155658322944449, guid: 46ba4525b5887d64088724e76b166afa,
+        type: 3}
+    - target: {fileID: 4457792621025506728, guid: baaf82bc878b68241bd2627067b9d0ce,
+        type: 3}
+      propertyPath: spawnPrefabs.Array.data[5]
+      value: 
+      objectReference: {fileID: 8745640271547350366, guid: b75c527fb61d059498f15f0717ce8cce,
         type: 3}
     - target: {fileID: 5231550662967755848, guid: baaf82bc878b68241bd2627067b9d0ce,
         type: 3}
@@ -4592,7 +4598,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1224619161
