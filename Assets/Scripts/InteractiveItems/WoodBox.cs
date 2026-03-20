@@ -6,9 +6,8 @@ public class WoodBox : Box, IDamagable
     [SerializeField] private GameObject _cube;
     [SerializeField] private BoxCollider _collider;
 
-    public void TakeDamage(Vector3 pos)
+    public void TakeDamage()
     {
-        UnregisterBox();
-        NetworkServer.UnSpawn(gameObject);
+        DestroyBox();
     }
 }

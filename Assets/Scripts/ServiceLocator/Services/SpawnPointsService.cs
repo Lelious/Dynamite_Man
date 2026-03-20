@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ServerSpawnService : NetworkBehaviour, IService
+public class SpawnPointsService : NetworkBehaviour, IService
 {
     [SerializeField] private List<Transform> _spawnPoints = new List<Transform>();
 

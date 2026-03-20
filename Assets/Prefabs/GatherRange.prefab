@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2140214526036097604}
+  serializedVersion: 2
   m_LocalRotation: {x: -0.9834136, y: 0, z: 0, w: -0.18137726}
   m_LocalPosition: {x: 0.001, y: 0.469, z: 0.018}
   m_LocalScale: {x: 3.7699997, y: 3.7699997, z: 3.7699997}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 83407100214171097}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -200.9, y: 0, z: 0}
 --- !u!33 &3232179550265397535
 MeshFilter:
@@ -108,13 +108,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3622385555480320915}
+  serializedVersion: 2
   m_LocalRotation: {x: -0.827328, y: -0, z: -0, w: 0.5617191}
   m_LocalPosition: {x: -0, y: 0.5, z: 0}
   m_LocalScale: {x: 26, y: 26, z: 26}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 83407100214171097}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -111.65, y: 0, z: 0}
 --- !u!33 &972737471960705259
 MeshFilter:
@@ -178,6 +178,7 @@ GameObject:
   - component: {fileID: 1261458686347095573}
   - component: {fileID: 201727508065265704}
   - component: {fileID: 2208820267035442358}
+  - component: {fileID: 7172511222475364730}
   m_Layer: 0
   m_Name: GatherRange
   m_TagString: Untagged
@@ -192,6 +193,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6404501358748707918}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -200,7 +202,6 @@ Transform:
   - {fileID: 8437929935001099646}
   - {fileID: 24545538970819742}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &1261458686347095573
 CapsuleCollider:
@@ -259,3 +260,20 @@ MonoBehaviour:
   syncInterval: 0
   _statType: 1
   _amount: 2
+  _match: {fileID: 7172511222475364730}
+--- !u!114 &7172511222475364730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6404501358748707918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d17e718851449a6879986e45c458fb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  MatchID: 

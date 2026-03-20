@@ -24,6 +24,11 @@ public class PlayerNameInput : MonoBehaviour
         _continueButton.interactable = !string.IsNullOrEmpty(_name);
     }
 
+    public string GetName()
+    {
+        return _name;
+    }
+
     public void SavePlayerName()
     {
         _name = _inputField.text;

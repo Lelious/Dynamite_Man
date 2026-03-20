@@ -1,21 +1,23 @@
-using UnityEngine;
+using Mirror;
 
 public class GameState : State
 {
     private GameLoopStateMachine _gameLoopStateMachine;
-    private ServerPlayersService _serverPlayersService;
+    private GameplayService _gameplayService;
 
-    public GameState(GameLoopStateMachine gameLoopStateMachine) : base(gameLoopStateMachine) 
+    public GameState(GameLoopStateMachine gameLoopStateMachine, GameplayService gameplayService) : base(gameLoopStateMachine) 
     { 
         _gameLoopStateMachine = gameLoopStateMachine;
-        _serverPlayersService = ServiceLocator<IService>.Instance.Get<ServerPlayersService>();
+        _gameplayService = gameplayService;
     }
 
+    [Server]
     public override void Enter()
     {
-        _serverPlayersService.StartGame();
+        _gameplayService.StartGameRound();
     }
 
+    [Server]
     public override void Exit()
     {
 

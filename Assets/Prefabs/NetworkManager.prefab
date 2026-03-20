@@ -1,5 +1,70 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4670708459013029525
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6957703956898819377}
+  - component: {fileID: 7985054421925171561}
+  - component: {fileID: 4526108012700038284}
+  m_Layer: 0
+  m_Name: LobbyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6957703956898819377
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4670708459013029525}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5402517488054928094}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7985054421925171561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4670708459013029525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f2fc0cd781c489419270a31f6a373e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!114 &4526108012700038284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4670708459013029525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 0
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &7773835731848121321
 GameObject:
   m_ObjectHideFlags: 0
@@ -11,7 +76,7 @@ GameObject:
   - component: {fileID: 5402517488054928094}
   - component: {fileID: 4457792621025506728}
   - component: {fileID: 5231550662967755848}
-  - component: {fileID: 2778676059866075214}
+  - component: {fileID: 8730700865175285324}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -26,13 +91,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7773835731848121321}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6957703956898819377}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4457792621025506728
 MonoBehaviour:
@@ -50,26 +116,27 @@ MonoBehaviour:
   runInBackground: 1
   headlessStartMode: 1
   editorAutoStart: 0
-  sendRate: 60
+  sendRate: 30
   autoStartServerBuild: 0
   autoConnectClientBuild: 0
   offlineScene: 
-  onlineScene: 
+  onlineScene: Assets/Scenes/LobbyScene.unity
   transport: {fileID: 5231550662967755848}
-  networkAddress: localhost
-  maxConnections: 4
+  networkAddress: 127.0.0.1
+  maxConnections: 999
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 354068692929334374, guid: 23d46a7c25853d44aa4b35d9803c9d4d,
+  playerPrefab: {fileID: 4530499948952636081, guid: 23d46a7c25853d44aa4b35d9803c9d4d,
     type: 3}
-  autoCreatePlayer: 1
+  autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 1428244826720692490, guid: b75c527fb61d059498f15f0717ce8cce, type: 3}
   - {fileID: 1991694375433360515, guid: ec940a8db1d562a44923aa065bc8c575, type: 3}
   - {fileID: 6404501358748707918, guid: caa4052d27feedb40bba1cfb8224943f, type: 3}
   - {fileID: 1842630673520806435, guid: 1a2810903dae4694b9aa16720e3c3101, type: 3}
+  - {fileID: 4515155658322944449, guid: 46ba4525b5887d64088724e76b166afa, type: 3}
+  - {fileID: 8745640271547350366, guid: b75c527fb61d059498f15f0717ce8cce, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -85,9 +152,14 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  _minPlayerCount: 2
-  _roomPlayerPrefab: {fileID: 0}
-  menuScene: 
+  _minPlayerCount: 1
+  _roomPlayerPrefab: {fileID: 866828431369633920, guid: 46ba4525b5887d64088724e76b166afa,
+    type: 3}
+  _gamePlayerPrefab: {fileID: 8088595982820859349, guid: 23d46a7c25853d44aa4b35d9803c9d4d,
+    type: 3}
+  _transport: {fileID: 5231550662967755848}
+  _gameScene:
+    m_Handle: 0
 --- !u!114 &5231550662967755848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,7 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   port: 7777
-  DualMode: 1
+  DualMode: 0
   NoDelay: 1
   Interval: 10
   Timeout: 10000
@@ -117,7 +189,7 @@ MonoBehaviour:
   debugLog: 0
   statisticsGUI: 0
   statisticsLog: 0
---- !u!114 &2778676059866075214
+--- !u!114 &8730700865175285324
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,27 +198,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7773835731848121321}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c761308e733c51245b2e8bb4201f46dc, type: 3}
+  m_Script: {fileID: 11500000, guid: d09f5c8bf2f4747b7a9284ef5d9ce2a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableActiveDiscovery: 1
-  BroadcastAddress: 
-  serverBroadcastListenPort: 47777
-  ActiveDiscoveryInterval: 3
-  transport: {fileID: 5231550662967755848}
-  OnServerFound:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Mirror.Discovery.NetworkDiscoveryHUD, Mirror.Components
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  secretHandshake: -3953674518929062079
+  matchCount: 0

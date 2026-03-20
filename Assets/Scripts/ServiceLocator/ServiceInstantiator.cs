@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class ServiceInstantiator : MonoBehaviour
@@ -8,7 +7,7 @@ public class ServiceInstantiator : MonoBehaviour
 
     private void Start()
     {
-        InitializeInputService();
+        //InitializeInputService();
     }
 
     private void InitializeInputService() => ServiceLocator<IService>.Instance.Register(_inputService);

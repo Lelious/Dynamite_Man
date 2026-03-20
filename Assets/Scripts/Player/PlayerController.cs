@@ -1,6 +1,5 @@
 using UnityEngine;
 using Mirror;
-using System.Collections;
 
 public sealed class PlayerController : NetworkBehaviour
 {
@@ -28,6 +27,8 @@ public sealed class PlayerController : NetworkBehaviour
     [ClientCallback]
     private void Update()
     {
+        if (Application.isBatchMode) return;
+
         if (_direction != Vector3.zero)
         {
             MovePlayer();
@@ -44,7 +45,8 @@ public sealed class PlayerController : NetworkBehaviour
     [Client]
     public void SetMovementVector(Vector3 direction)
     {
-        Debug.Log(direction);
+        if (Application.isBatchMode) return;
+
         if(Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
         {
             _direction = new Vector3(direction.x > 0 ? 1 : -1, 0f, 0f);
@@ -57,7 +59,6 @@ public sealed class PlayerController : NetworkBehaviour
         {
             _direction = Vector3.zero;
         }
-        Debug.Log(_direction);
     }
 
     #region Server
@@ -65,6 +66,12 @@ public sealed class PlayerController : NetworkBehaviour
     [ServerCallback]
     private void FixedUpdate()
     {
+        if (_direction != Vector3.zero)
+        {
+            _characterController.Move(_walkSpeed * Time.fixedDeltaTime * _direction);
+            transform.rotation = Quaternion.LookRotation(_direction);
+        }
+
         _moveFactor = _direction.magnitude;
         UpdateAnimator(_direction);
     }
@@ -84,7 +91,6 @@ public sealed class PlayerController : NetworkBehaviour
         {
             _direction = Vector3.zero;
         }
-        Debug.Log(_direction);
     }
 
     [ServerCallback]
@@ -99,5 +105,12 @@ public sealed class PlayerController : NetworkBehaviour
 
     [ServerCallback]
     public void SetSpeed(float speed) => _walkSpeed = speed;
+
+    [Server]
+    public void IncreaceSpeed(float speed)
+    {
+        _walkSpeed += speed;
+        _walkSpeed = Mathf.Clamp(_walkSpeed, 3f, 7f);
+    }
     #endregion
 }

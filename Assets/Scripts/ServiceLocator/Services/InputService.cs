@@ -12,18 +12,20 @@ public class InputService : ServiceBase
 
     private bool _disableControll = true;
     private PlayerController _controller;
-    private BombService _bombService;
     private Player _player;
     private Vector3 _movementInput;
 
     private void Start()
     {
+        if (Application.isBatchMode) return;
+
         _bombButton.onClick.AddListener(PlaceBomb);
-        ServiceLocator<IService>.Instance.Register(this);
     }
 
     private void Update()
     {
+        if (Application.isBatchMode) return;
+
         if (_controller == null)
         {
             Debug.Log("Null controller");
@@ -66,7 +68,6 @@ public class InputService : ServiceBase
     public void SetPlayer(Player player)
     {
         _player = player;
-        _bombService = _player.GetBombService();
     }
 
     public void DisableControll()
@@ -79,8 +80,6 @@ public class InputService : ServiceBase
             item.SetActive(false);
         }
     }
-
-    public PlayerBombVisualService GetBombVisual() => _bombVisual;
 
     public void EnableControll()
     {
@@ -97,7 +96,7 @@ public class InputService : ServiceBase
         if (_player == null) return;
         if (_disableControll) return;
 
-        _bombService.CmdPlaceBomb(_player);
+        _player.CmdPlaceBomb();
     }
 
     private void MoveInput(Vector3 inputKeyboard)

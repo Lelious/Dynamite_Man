@@ -34,7 +34,7 @@ public class ServiceLocator<T> : IServiceLocator<T>
         }
         else
         {
-            throw new NotImplementedException($"ServiceLocator not contains {(TP)service}");
+            return default;
         }
     }
 

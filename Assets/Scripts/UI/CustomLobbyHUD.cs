@@ -1,50 +1,54 @@
 using Mirror;
 using Mirror.Discovery;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CustomLobbyHUD : MonoBehaviour
 {
-    [SerializeField] private CustomNetwork _networkManager;
-    [SerializeField] private NetworkDiscovery _networkDiscovery;
     [SerializeField] private GameObject _landingPanel;
     [SerializeField] private List<CustomLobbyServerButton> _buttonToConnect = new List<CustomLobbyServerButton>();
     [SerializeField] private PlayerNameInput _inputPlayerName;
     [SerializeField] private GameNameInput _inputGameName;
 
-    private readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
-    private ServerResponse _server;
+    private Guid _lastClickedRoomGuid;
 
-    private void Start()
+    private void Awake()
     {
-        _networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
-
-        CustomLobbyServerButton.OnServerButtonClicked += SetServer;
+        CustomLobbyServerButton.OnRoomButtonClicked += SetRoomToJoin;
     }
 
-    public void StartHost()
+    public void CreateGame()
     {
-        discoveredServers.Clear();
-        NetworkManager.singleton.StartHost();
-        _landingPanel.SetActive(false);
-        _networkDiscovery.AdvertiseServer(_inputGameName.GetName());
+        NetworkRoomPlayer player =
+        NetworkClient.localPlayer.GetComponent<NetworkRoomPlayer>();
+        var name = _inputPlayerName.GetName();
+        player.DisplayName = name;
+        player.CmdCreateRoom(_inputGameName.GetName());
     }
 
     public void Refresh()
     {
-        discoveredServers.Clear();
-        _networkDiscovery.StartDiscovery();
+        NetworkClient.localPlayer.GetComponent<NetworkRoomPlayer>().UpdateRoomList();
+    }
+
+    public void UpdateHUDRoomsList(List<LobbyRoom> rooms)
+    {
+        foreach (var item in _buttonToConnect)
+        {
+            item.gameObject.SetActive(false);
+        }
+
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            _buttonToConnect[i].gameObject.SetActive(true);
+            _buttonToConnect[i].SetServer(rooms[i].id, rooms[i].name);
+        }
     }
 
     public void Connect()
     {
-        if (_server.EndPoint == null) return;
-
-        _networkDiscovery.StopDiscovery();
-        _landingPanel.SetActive(false);
-        NetworkManager.singleton.StartClient(_server.uri);
+        NetworkClient.localPlayer.GetComponent<NetworkRoomPlayer>().CmdJoinRoom(_lastClickedRoomGuid);
     }
 
     public void Quit()
@@ -52,36 +56,8 @@ public class CustomLobbyHUD : MonoBehaviour
         Application.Quit();
     }
 
-    private void OnDiscoveredServer(ServerResponse info)
+    private void SetRoomToJoin(Guid id)
     {
-        if (discoveredServers.TryAdd(info.serverId, info))
-        {
-            RedrawFindedServers();
-        }
-    }
-    private void SetServer(ServerResponse response)
-    {
-        _server = response;
-    }
-
-    private void RedrawFindedServers()
-    {
-        foreach (var item in _buttonToConnect)
-        {
-            item.gameObject.SetActive(false);
-        }
-
-        int iterator = 0;
-
-        foreach (var item in discoveredServers)
-        {
-            _buttonToConnect[iterator].gameObject.SetActive(true);
-            _buttonToConnect[iterator].SetServer(item.Value);
-        }
-    }
-
-    private void OnDestroy()
-    {
-        CustomLobbyServerButton.OnServerButtonClicked -= SetServer;
+        _lastClickedRoomGuid = id;
     }
 }

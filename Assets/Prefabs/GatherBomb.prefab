@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529777194544172854}
+  serializedVersion: 2
   m_LocalRotation: {x: -0.49855632, y: 0.017500289, z: 0.38066655, w: 0.7786067}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5.68, y: 5.6800013, z: 5.6800003}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 901389378662986655}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -30, y: 0, z: 0}
 --- !u!33 &4043365948261261674
 MeshFilter:
@@ -108,6 +108,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903207497974873006}
+  serializedVersion: 2
   m_LocalRotation: {x: 0.2800502, y: -0.11542772, z: -0.36316624, w: 0.88111216}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -115,7 +116,6 @@ Transform:
   m_Children:
   - {fileID: 5982217083552401240}
   m_Father: {fileID: 554482331644335199}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 24.184, y: -26.485, z: -50.572}
 --- !u!33 &1680499653843226353
 MeshFilter:
@@ -179,6 +179,7 @@ GameObject:
   - component: {fileID: 2010892242507456308}
   - component: {fileID: 6170081276106783073}
   - component: {fileID: 1930384551468283026}
+  - component: {fileID: 8641614445194626077}
   m_Layer: 0
   m_Name: GatherBomb
   m_TagString: Untagged
@@ -193,6 +194,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1842630673520806435}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -200,7 +202,6 @@ Transform:
   m_Children:
   - {fileID: 901389378662986655}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2010892242507456308
 MonoBehaviour:
@@ -259,3 +260,20 @@ MonoBehaviour:
   syncInterval: 0
   _statType: 0
   _amount: 1
+  _match: {fileID: 8641614445194626077}
+--- !u!114 &8641614445194626077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842630673520806435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d17e718851449a6879986e45c458fb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  MatchID: 

@@ -3,31 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Mirror.Discovery;
 using System;
 
 public class CustomLobbyServerButton : MonoBehaviour
 {
-    public static event Action<ServerResponse> OnServerButtonClicked;
+    public static event Action<Guid> OnRoomButtonClicked;
     public Button Button;
 
-    [SerializeField] private TextMeshProUGUI _serverName;
+    private Guid _guid;
 
-    private ServerResponse _response;
+    [SerializeField] private TextMeshProUGUI _serverName;
 
     private void Awake()
     {
         Button.onClick.AddListener(ServerButtonClick);
     }
 
-    public void SetServer(ServerResponse response)
+    public void SetServer(Guid id, string name)
     {
-        _response = response;
-        _serverName.text = response.GameName;
+        _serverName.text = name;
+        _guid = id;
     }
 
     public void ServerButtonClick()
     {
-        OnServerButtonClicked?.Invoke(_response);
+        OnRoomButtonClicked?.Invoke(_guid);
     }
 }

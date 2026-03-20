@@ -4,30 +4,34 @@ using System.Threading.Tasks;
 public class GameLoadState : State
 {
     private GameLoopStateMachine _gameLoopStateMachine;
-    private ServerPlayersService _serverPlayersService;
-    public GameLoadState(GameLoopStateMachine gameLoopStateMachine) : base(gameLoopStateMachine) 
+    private GameplayService _gameplayService;
+    private MapService _mapService;
+
+    public GameLoadState(GameLoopStateMachine gameLoopStateMachine, MapService mapService, GameplayService gameplayService) : base(gameLoopStateMachine) 
     { 
         _gameLoopStateMachine = gameLoopStateMachine;
-        _serverPlayersService = ServiceLocator<IService>.Instance.Get<ServerPlayersService>();
+        _gameplayService = gameplayService;
+        _mapService = mapService;
     }
 
+    [Server]
     public override void Enter()
     {
-        _serverPlayersService.DisablePlayersControll();
+        _gameplayService.DisablePlayersControll();
         DelayedStart();
     }
 
+    [Server]
     public override void Exit()
     {
 
     }
 
+    [Server]
     private async void DelayedStart()
     {
-        NetworkServer.SpawnObjects();
         await Task.Delay(3000);
-        ServiceLocator<IService>.Instance.Get<MapService>().InitAllBoxes();
-        _serverPlayersService.ResetGame();
+        _gameplayService.ResetGame();
         _gameLoopStateMachine.Enter<GameState>();
     }
 }

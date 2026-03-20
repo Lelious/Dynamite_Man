@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class Bomb : NetworkBehaviour, IMapObject
 {
@@ -12,9 +13,12 @@ public class Bomb : NetworkBehaviour, IMapObject
     [SerializeField] private List<Collider> _collisionsList = new List<Collider>();
     [SerializeField] private GameObject _explosion, _derbis, _bombVisual;
     [SerializeField] private BombSparks _sparks;
+    [SerializeField] private NetworkMatch _match;
 
+    private List<IMapObject> _damagables = new();
     private Vector2Int _position;
     private Player _player;
+    private GameplayService _gameplayService;
     private BombService _bombService;
     private MapService _mapService;
     private float _timer;
@@ -23,8 +27,9 @@ public class Bomb : NetworkBehaviour, IMapObject
     private int _bombPower;
 
     [ServerCallback]
-    public void InitializeBomb(Vector2Int pos, Player player)
+    public void InitializeBomb(Vector2Int pos, Player player, MapService map, GameplayService gameplayService)
     {
+        _damagables.Clear();
         _player = player;
         _position = pos;
         _timer = _timeToExplode;
@@ -32,13 +37,21 @@ public class Bomb : NetworkBehaviour, IMapObject
         _initTime = 0.2f;
         _isInited = false;
         _bombPower = player.GetBombPower();
-        _mapService = ServiceLocator<IService>.Instance.Get<MapService>();
+        _mapService = map;
+        _gameplayService = gameplayService;
+
         StartCoroutine(BombRoutine());
     }
 
+    [Server]
+    public void SetBombMatch(Guid id) => _match.matchId = id;
+    [Server]
     public void SetPlayer(Player player) => _player = player;
+    [Server]
     public Player GetPlayer() => _player;
+    [Server]
     public float GetExplodeTime() => _timeToExplode;
+
     private IEnumerator BombRoutine()
     {
         while (_timer > 0)
@@ -60,8 +73,9 @@ public class Bomb : NetworkBehaviour, IMapObject
     [ServerCallback]
     private void BombExplode()
     {
+        _damagables.Clear();
         _collisionCollider.enabled = false;
-        _bombService.Unregister(this);
+        _mapService.UnregisterMapObject(this, new Vector2Int((int)transform.position.x, (int)transform.position.z));
 
         var mapObj = _mapService.GetObjects(_position);
 
@@ -69,15 +83,7 @@ public class Bomb : NetworkBehaviour, IMapObject
         {
             foreach (var obj in mapObj)
             {
-                if (obj.GetMapObjectType() == MapObjectType.Player)
-                {
-                    var gO = obj.GetObject();
-                    gO.GetComponent<IDamagable>().TakeDamage(new Vector3(transform.position.x, -1f, transform.position.z));
-                    if (gO.GetComponent<Player>() != _player)
-                    {
-                        _player.Kills++;
-                    }
-                }              
+                _damagables.Add(obj);          
             }
         }
 
@@ -86,10 +92,15 @@ public class Bomb : NetworkBehaviour, IMapObject
         int down = CalculateExplosion(Vector2Int.down, _position, _bombPower);
         int left = CalculateExplosion(Vector2Int.left, _position, _bombPower);
 
-
+        _gameplayService.ProcessBombDamage(_player, _damagables);
         Explosion explosionScheme = new Explosion(up, right, down, left);
-
         _player.IncreaceBombCount();
+
+        foreach (var item in _damagables)
+        {
+            Debug.Log($"Bomb at {_position} hitted target {item.GetObject().name} at {item.GetRoundedCoords()}");
+        }
+
         StartCoroutine(DelayedDespawnRoutine());
         RpcBombExplodeVisual();
         RpcSetExplosionCheme(explosionScheme);
@@ -118,24 +129,18 @@ public class Bomb : NetworkBehaviour, IMapObject
                     {
                         switch (obj.GetMapObjectType())
                         {
-                            case MapObjectType.Player:
-                                if (obj.GetObject().TryGetComponent(out IDamagable damagable))
-                                {
-                                    damagable.TakeDamage(new Vector3(transform.position.x, -1f, transform.position.z));
-                                }
-                                length++;
-                                break;                           
-                            case MapObjectType.Wood:
-                                if (obj.GetObject().TryGetComponent(out IDamagable woodDamagable))
-                                {
-                                    woodDamagable.TakeDamage(new Vector3(transform.position.x, -1f, transform.position.z));
-                                }
-                                return ++length;
+                            case MapObjectType.Concrete:
+                                return length;
                             case MapObjectType.Bomb:
                                 length++;
                                 break;
-                            case MapObjectType.Concrete:
-                                return length;
+                            case MapObjectType.Player:
+                                _damagables.Add(obj);
+                                length++;
+                                break;                           
+                            case MapObjectType.Wood:
+                                _damagables.Add(obj);
+                                return ++length;
                         }
                     }
                 }
@@ -215,4 +220,7 @@ public class Bomb : NetworkBehaviour, IMapObject
     public Vector2Int GetRoundedCoords() => _position;
     public MapObjectType GetMapObjectType() => MapObjectType.Bomb;
     public GameObject GetObject() => gameObject;
+
+    [Server]
+    public Guid GetMatchGuid() => _match.matchId;
 }

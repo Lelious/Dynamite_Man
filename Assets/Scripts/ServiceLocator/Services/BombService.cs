@@ -1,54 +1,74 @@
 using Mirror;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public sealed class BombService : NetworkBehaviour, IService
 {
     [SerializeField] private Bomb _bomb;
-    [SerializeField] private float _bombResetTime = 2f;
+    [SerializeField] private float _bombExplodeTime = 2f;
 
-    private MapService _mapService;
+    private List<Bomb> _allBombs = new();
+    private Queue<Bomb> _bombPool = new();
 
-    [Command]
-    public void CmdPlaceBomb(Player player)
+    [ServerCallback]
+    private void Start()
     {
-        if (_mapService == null)
-        {
-            _mapService = ServiceLocator<IService>.Instance.Get<MapService>();
-        }
+        ServiceLocator<IService>.Instance.Register(this);
 
+        for (int i = 0; i < 100; i++)
+        {
+            var bomb = GetOrCreate();
+            _bombPool.Enqueue(bomb);
+        }
+    }
+
+    [Server]
+    public float GetBombExplodeTime() => _bombExplodeTime;
+
+    [Server]
+    public void PlaceBomb(Player player, MapService map, GameplayService gameplayService)
+    {
         if (player.GetBombCount() > 0)
         {
             Vector2Int pos = new Vector2Int(Mathf.RoundToInt(player.transform.position.x), Mathf.RoundToInt(player.transform.position.z));
 
-            if (_mapService.CheckFree(pos))
+            if (map.CheckFree(pos))
             {
                 player.ReduseBombCount();
-                Bomb bomb = GetOrCreate(player);
+                Bomb bomb = null;
+
+                if (_bombPool.TryDequeue(out bomb)) { }
+                else
+                {
+                    bomb = GetOrCreate();
+                    _allBombs.Add(bomb);
+                }
+
                 bomb.transform.position = new Vector3(pos.x, 0.5f, pos.y);
-                _mapService.RegisterMapObject(bomb, pos);
-                bomb.InitializeBomb(pos, player);
-                NetworkServer.Spawn(bomb.gameObject, connectionToClient);
+                map.RegisterMapObject(bomb, pos);
+                bomb.SetBombMatch(player.GetMatchGuid());
+                bomb.InitializeBomb(pos, player, map, gameplayService);
+                NetworkServer.Spawn(bomb.gameObject);
+                Debug.Log("SpawnBomb");
             }
         }
     }
 
     [ServerCallback]
-    public void Unregister(Bomb bomb)
+    public void ReturnToServicePool(Bomb bomb)
     {
-        _mapService.UnregisterMapObject(new Vector2Int((int)bomb.transform.position.x, (int)bomb.transform.position.z));
+        NetworkServer.UnSpawn(bomb.gameObject);
+        _bombPool.Enqueue(bomb);
     }
 
     [ServerCallback]
-    public void ReturnToServicePool(Bomb bomb)
-    {
-        NetworkServer.Destroy(bomb.gameObject);
-    }
-
-    private Bomb GetOrCreate(Player player)
+    private Bomb GetOrCreate()
     {
         var newBomb = Instantiate(_bomb);
-        newBomb.SetPlayer(player);
         newBomb.SetBombService(this);
+        _allBombs.Add(newBomb);
+
         return newBomb;
     }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2471303012935482918}
   - component: {fileID: 182857478}
   - component: {fileID: 6047898322272824626}
+  - component: {fileID: 6907426388294064754}
   m_Layer: 6
   m_Name: WoodenCube
   m_TagString: Untagged
@@ -26,6 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2471303012935482916}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -33,7 +35,6 @@ Transform:
   m_Children:
   - {fileID: 1124128906021172394}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2471303012935482918
 MonoBehaviour:
@@ -51,7 +52,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _type: 2
-  _cube: {fileID: 0}
+  _match: {fileID: 6907426388294064754}
+  _cube: {fileID: 7608757750449887947}
   _collider: {fileID: 182857478}
 --- !u!65 &182857478
 BoxCollider:
@@ -91,6 +93,22 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &6907426388294064754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2471303012935482916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d17e718851449a6879986e45c458fb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  MatchID: 
 --- !u!1001 &2404256264996412154
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -159,7 +177,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cube
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 104203295684280480, guid: 97477e68975100f4ea3b0750b4a8db9c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -167,6 +186,12 @@ PrefabInstance:
 --- !u!4 &1124128906021172394 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3369843834723610192, guid: 97477e68975100f4ea3b0750b4a8db9c,
+    type: 3}
+  m_PrefabInstance: {fileID: 2404256264996412154}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7608757750449887947 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5245038293033058353, guid: 97477e68975100f4ea3b0750b4a8db9c,
     type: 3}
   m_PrefabInstance: {fileID: 2404256264996412154}
   m_PrefabAsset: {fileID: 0}

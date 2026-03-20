@@ -1,0 +1,279 @@
+{
+    "objects": [
+        {
+            "Type": "Concrete",
+            "PosX": -11,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -11,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -11,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -11,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -11,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -9,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -9,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -9,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -9,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -9,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -7,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -7,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -7,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -7,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -7,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -5,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -5,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -5,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -5,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -5,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -3,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -3,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -3,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -3,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -3,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -1,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -1,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -1,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -1,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": -1,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 1,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 1,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 1,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 1,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 1,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 3,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 3,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 3,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 3,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 3,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 5,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 5,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 5,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 5,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 5,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 7,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 7,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 7,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 7,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 7,
+            "PosZ": 4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 9,
+            "PosZ": -4
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 9,
+            "PosZ": -2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 9,
+            "PosZ": 0
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 9,
+            "PosZ": 2
+        },
+        {
+            "Type": "Concrete",
+            "PosX": 9,
+            "PosZ": 4
+        }
+    ]
+}

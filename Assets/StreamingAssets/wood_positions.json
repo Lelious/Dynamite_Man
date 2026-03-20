@@ -1,0 +1,19 @@
+{
+    "objects": [
+        {
+            "Type": "Wood",
+            "PosX": -1,
+            "PosZ": -1
+        },
+        {
+            "Type": "Wood",
+            "PosX": 0,
+            "PosZ": -1
+        },
+        {
+            "Type": "Wood",
+            "PosX": 1,
+            "PosZ": -1
+        }
+    ]
+}

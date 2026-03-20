@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1196775637511603000}
   - component: {fileID: 7740923499035393979}
   - component: {fileID: 3102103312890742139}
-  - component: {fileID: 956979262469971205}
   - component: {fileID: 5109761372410478154}
+  - component: {fileID: 928749806947866350}
   m_Layer: 0
   m_Name: ConcreteCube
   m_TagString: Untagged
@@ -28,13 +28,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2488821388314155876}
+  serializedVersion: 2
   m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -11, y: 0.5, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1196775637511603000
 MeshFilter:
@@ -102,23 +102,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _type: 1
---- !u!114 &956979262469971205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2488821388314155876}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  _assetId: 1424270239
-  serverOnly: 0
-  visibility: 0
-  hasSpawned: 0
 --- !u!136 &5109761372410478154
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -142,3 +125,20 @@ CapsuleCollider:
   m_Height: 2.07
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &928749806947866350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488821388314155876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 1424270239
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0

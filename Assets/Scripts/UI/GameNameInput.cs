@@ -15,7 +15,7 @@ public class GameNameInput : MonoBehaviour
     {
         SetGameName();
     }
-    public string GetName() => _name;
+    public string GetName() => _inputField.text;
 
     public void SetGameName()
     {

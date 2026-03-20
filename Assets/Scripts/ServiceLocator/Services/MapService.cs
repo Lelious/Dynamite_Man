@@ -1,40 +1,102 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using System.Collections;
+using System.IO;
+using System;
 
-public sealed class MapService : NetworkBehaviour, IService
+public class MapService : IDisposable
 {
-    [SerializeField] private List<Box> _allBoxList = new List<Box>();
-    [SerializeField] private Vector2Int _lowerLimit, _upperLimit;
-
+    private Guid _matchId;
+    private List<Box> _allBoxList = new List<Box>();
+    private Vector2Int _lowerLimit = new Vector2Int(-12, -5);
+    private Vector2Int _upperLimit = new Vector2Int(10, 5);
     private Dictionary<Vector2Int, IMapObject> _mapObjects;
     private HashSet<IMapObject> _mapObjectsHash;
     private HashSet<IMapObject> _players;
-    private ServerPlayersService _playersService;
+    private CollectablesService _collectablesService;
+    private GameplayService _gameplayService;
+    private Box _woodBoxPrefab;
+    private string _woodBoxSchemePath;
 
-    [ServerCallback]
-    private IEnumerator Start()
+    public MapService(Guid id, Box woodBoxPrefab, List<Box> concreteCommonBoxList, GameplayService gameplayService)
     {
-        yield return new WaitForEndOfFrame();
-
-        ServiceLocator<IService>.Instance.Register(this);
+        _matchId = id;
+        _woodBoxPrefab = woodBoxPrefab;
+        _woodBoxSchemePath = Path.Combine(Application.streamingAssetsPath, "wood_positions.json");
         _mapObjects = new Dictionary<Vector2Int, IMapObject>();
         _players = new HashSet<IMapObject>();
         _mapObjectsHash = new HashSet<IMapObject>();
-        _playersService = ServiceLocator<IService>.Instance.Get<ServerPlayersService>();
+        _collectablesService = ServiceLocator<IService>.Instance.Get<CollectablesService>();
+        _gameplayService = gameplayService;
 
-        InitAllBoxes();
+        foreach (var item in concreteCommonBoxList)
+        {
+            _allBoxList.Add(item);
+        }
     }
 
     [ServerCallback]
-    public void InitAllBoxes()
+    public void InitializeService()
+    {
+        string json = File.ReadAllText(_woodBoxSchemePath);
+        PositionList woodlist = JsonUtility.FromJson<PositionList>(json);
+        Debug.Log($"Inited wood list, count is {woodlist.objects.Count}");
+
+        if (_woodBoxPrefab == null)
+            Debug.Log("Wood prefab is null");
+
+        foreach (var obj in woodlist.objects)
+        {
+            var woodBox = GameObject.Instantiate(_woodBoxPrefab, new Vector3(obj.PosX, 0.5f, obj.PosZ), Quaternion.identity);
+            woodBox.InitializeBox(this, _matchId);
+            woodBox.IsDestroyed = true;
+            _allBoxList.Add(woodBox);
+        }
+        ResetMapObjects();
+    }
+
+    [Server]
+    public void ResetMapObjects()
     {
         _mapObjects.Clear();
 
         foreach (var item in _allBoxList)
         {
-            _mapObjects.Add(new Vector2Int((int)item.transform.position.x, (int)item.transform.position.z), item.GetComponent<IMapObject>());
+            var pos = new Vector2Int((int)item.transform.position.x, (int)item.transform.position.z);
+
+            _mapObjects.Add(pos, item.GetComponent<IMapObject>());
+
+            if (!item.GetMapObjectType().Equals(MapObjectType.Concrete))
+            {
+                if (item.IsDestroyed)
+                {
+                    item.IsDestroyed = false;
+                    NetworkServer.Spawn(item.gameObject);
+                }
+            }
+        }
+    }
+
+    [Server]
+    public void RegisterPlayer(IMapObject player)
+    {
+        _players.Add(player);
+    }
+
+    [Server]
+    public void UnregisterPlayer(IMapObject player)
+    {
+        if (_players.Contains(player))
+            _players.Remove(player);
+    }
+
+    [ServerCallback]
+    public void DestroyGameObjects()
+    {
+        foreach (var item in _allBoxList)
+        {
+            if(item.GetMapObjectType().Equals(MapObjectType.Wood))
+                NetworkServer.Destroy(item.gameObject);
         }
     }
 
@@ -48,7 +110,7 @@ public sealed class MapService : NetworkBehaviour, IService
             _mapObjectsHash.Add(mapObject);
         }
 
-        foreach (var player in _playersService.GetMapPlayers())
+        foreach (var player in _players)
         {
             if (player.GetRoundedCoords() == coords)
             {
@@ -88,9 +150,6 @@ public sealed class MapService : NetworkBehaviour, IService
         }
     }
 
-    public Vector2Int GetLowerLimit() => _lowerLimit;
-    public Vector2Int GetUpperLimit() => _upperLimit;
-
     [ServerCallback]
     public void RegisterMapObject(IMapObject mapObject, Vector2Int coords)
     {
@@ -98,14 +157,41 @@ public sealed class MapService : NetworkBehaviour, IService
     }
 
     [ServerCallback]
-    public void UnregisterMapObject(Vector2Int coords)
+    public void UnregisterMapObject(IMapObject obj, Vector2Int coords)
     {
+        if(obj.GetMapObjectType().Equals(MapObjectType.Wood))
+        {
+            _collectablesService.SpawnCollectable(coords, obj.GetMatchGuid(), _gameplayService);
+        }
         if (_mapObjects.TryGetValue(coords, out _))
         {
             _mapObjects.Remove(coords);
         }
     }
 
+    [ServerCallback]
+    public void DestroyObject(GameObject obj)
+    {
+        NetworkServer.UnSpawn(obj);
+    }
+
+    [Server]
+    public void Dispose()
+    {
+        foreach (var item in _allBoxList)
+        {
+            if(item.GetMapObjectType().Equals(MapObjectType.Wood))
+            {
+                NetworkServer.Destroy(item.gameObject);
+            }
+        }
+
+        _allBoxList.Clear();
+        _mapObjects.Clear();
+        _mapObjectsHash.Clear();
+        _gameplayService = null;
+        _players.Clear();
+    }
 }
 public enum CellStatus
 {

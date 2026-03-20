@@ -8,16 +8,14 @@ public class GameLoopStateMachine : IService
 
     public IState ActiveState => _activeState;
 
-    public GameLoopStateMachine()
+    public GameLoopStateMachine(MapService mapService, GameplayService gameplayService, Guid id)
     {
         _states = new Dictionary<Type, IState>
         {
-            { typeof(GameLoadState), new GameLoadState(this) },
-            { typeof(GameState), new GameState(this) },
-            { typeof(GameRestartState), new GameRestartState(this) },
+            { typeof(GameLoadState), new GameLoadState(this, mapService, gameplayService) },
+            { typeof(GameState), new GameState(this, gameplayService) },
+            { typeof(GameRestartState), new GameRestartState(this, gameplayService, id, mapService) },
         };
-
-        ServiceLocator<IService>.Instance.Register(this);
     }
 
     public void Enter<TState>() where TState : class, IState

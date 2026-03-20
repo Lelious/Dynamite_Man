@@ -6,14 +6,15 @@ using TMPro;
 
 public class Player : NetworkBehaviour, IDamagable, IMapObject
 {
-    public static event Action<Player> OnPlayerDead;
-
     [SerializeField] private Animator _animator;
     [SerializeField] private GameObject _ragdoll;
-    [SerializeField] private BombService _bombService;
     [SerializeField] private CharacterController _controller;
     [SerializeField] private TextMeshProUGUI _displayName;
     [SerializeField] private Transform _nameUI;
+    [SerializeField] private InputService _inputService;
+    [SerializeField] private NetworkMatch _match;
+    [SerializeField] private PlayerController _playerController;
+
     [SyncVar(hook = nameof(HandleDisplayNameChanged))]
     private string _name = "noname";
     private PlayerBombVisualService _bombVisual;
@@ -23,13 +24,14 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     [SyncVar]
     private float _bombExplodeTime;
     [SyncVar]
-    private int _bombCount;
+    [SerializeField] private int _bombCount;
     [SyncVar(hook = nameof(ValidateBombs))]
     private int _maxBombCount;
     [SyncVar]
     private int _bombPower;
-    
+
     private Transform _reservedSpawnPoint;
+    private GameplayService _gameplayService;
 
     private void Start()
     {
@@ -37,7 +39,6 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
         {
             ServiceLocator<IService>.OnServiceRegistered += ValidateService;
         }
-
         _controller = GetComponent<CharacterController>();
     }
 
@@ -46,8 +47,16 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
         _nameUI.LookAt(_nameUI.position + Camera.main.transform.rotation * Vector3.back, Camera.main.transform.rotation * Vector3.up);
     }
 
-    public BombService GetBombService() => _bombService;
+    [Server]
     public int GetBombCount() => _bombCount;
+
+    [Server]
+    public void IncreaceSpeed(float value) => _playerController.IncreaceSpeed(value);
+
+    [Server]
+    public void SetSpeed(float value) => _playerController.SetSpeed(value);
+
+    [Server]
     public int GetBombPower() => _bombPower;
 
     private void ValidateService(IService service)
@@ -70,12 +79,26 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
         }
     }
 
+    [Command]
+    public void CmdPlaceBomb()
+    {
+        _gameplayService.PlaceBomb(this);
+    }
+
+    [Server]
+    public void SetGameplayService(GameplayService bombService) => _gameplayService = bombService;
+    [Server]
+    public void SetMatchId(Guid id) => _match.matchId = id;
+
     [ClientRpc]
     public void InitServices()
     {
         if (isLocalPlayer && isClient)
         {
-            ServiceLocator<IService>.Instance.Get<InputService>().SetPlayer(this);
+            var inputService = Instantiate(_inputService);
+            inputService.SetPlayer(this);
+            ServiceLocator<IService>.Instance.Register(inputService);
+            inputService.EnableControll();
             _bombVisual = ServiceLocator<IService>.Instance.Get<PlayerBombVisualService>();
         }
     }
@@ -168,13 +191,11 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     }
 
     [ServerCallback]
-    public void TakeDamage(Vector3 pos)
+    public void TakeDamage()
     {
         RpcTakeDamage();
         RpcDisableControll();
         HidePlayer();
-
-        OnPlayerDead?.Invoke(this);
     }
 
     [ServerCallback]
@@ -198,9 +219,9 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     }
 
     [ServerCallback]
-    public void SetBombExplodeTime()
+    public void SetBombExplodeTime(float time)
     {
-        _bombExplodeTime = ServiceLocator<IService>.Instance.Get<ServerCoreService>().BombExplodeTime;
+        _bombExplodeTime = time;
     }
 
     [ServerCallback]
@@ -238,5 +259,7 @@ public class Player : NetworkBehaviour, IDamagable, IMapObject
     public MapObjectType GetMapObjectType() => MapObjectType.Player;
     [ServerCallback]
     public GameObject GetObject() => gameObject;
+    [Server]
+    public Guid GetMatchGuid() => _match.matchId;
     #endregion
 }

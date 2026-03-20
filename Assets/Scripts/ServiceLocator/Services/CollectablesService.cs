@@ -1,9 +1,10 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class ServerCollectablesService : NetworkBehaviour, IService
+public sealed class CollectablesService : NetworkBehaviour, IService
 {
     [SerializeField] private List<Collectable> _collectables = new List<Collectable>();
     [SerializeField] private float _chance;
@@ -18,11 +19,12 @@ public sealed class ServerCollectablesService : NetworkBehaviour, IService
     }
 
     [ServerCallback]
-    public void SpawnCollectable(Vector2Int pos)
+    public void SpawnCollectable(Vector2Int pos, Guid matchId, GameplayService gameplayService)
     {
-        if (Random.Range(0f, 100f) <= _chance)
+        if (UnityEngine.Random.Range(0f, 100f) <= _chance)
         {
             var collectable = Instantiate(GetRandomCollectable(), new Vector3(pos.x, 0f, pos.y), Quaternion.identity);
+            collectable.InitializeCollectable(matchId, gameplayService);
             _spawnedCollectables.Add(collectable);
             NetworkServer.Spawn(collectable.gameObject, connectionToServer);
         }
@@ -35,17 +37,29 @@ public sealed class ServerCollectablesService : NetworkBehaviour, IService
         NetworkServer.Destroy(collectable.gameObject);
     }
 
-    public void UnspawnAllCollectables()
+    [Server]
+    public void UnspawnAllCollectables(Guid matchId)
     {
+        var matchCollectables = new List<Collectable>();
+
         foreach (var item in _spawnedCollectables)
         {
-            NetworkServer.Destroy(item.gameObject);
+            if(item.GetMatchId().Equals(matchId))
+            {
+                matchCollectables.Add(item);
+            }
         }
-        _spawnedCollectables.Clear();
+
+        for (int i = 0; i < matchCollectables.Count; i++)
+        {
+            _spawnedCollectables.Remove(matchCollectables[i]);
+            NetworkServer.Destroy(matchCollectables[i].gameObject);
+        }
     }
 
+    [Server]
     private Collectable GetRandomCollectable()
     {
-        return _collectables[Random.Range(0, _collectables.Count)];
+        return _collectables[UnityEngine.Random.Range(0, _collectables.Count)];
     }
 }
